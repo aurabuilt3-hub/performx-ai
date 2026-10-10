@@ -1,0 +1,40 @@
+{
+  "name": "performx",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node scripts/verify-frontend.js && node scripts/verify-api-client.js && node scripts/verify-auth-profile.js && node scripts/verify-movement-workout.js && node scripts/verify-analytics-history.js && node scripts/verify-plans-recovery-docs.js && node scripts/verify-ai-coach.js",
+    "test:api": "node scripts/verify-api-client.js",
+    "test:auth": "node scripts/verify-auth-profile.js",
+    "test:movement": "node scripts/verify-movement-workout.js",
+    "test:analytics": "node scripts/verify-analytics-history.js",
+    "test:step3d": "node scripts/verify-plans-recovery-docs.js",
+    "test:ai": "node scripts/verify-ai-coach.js"
+  },
+  "dependencies": {
+    "@mediapipe/tasks-vision": "^1.1.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^13.0.3",
+    "canvas-confetti": "^1.9.4",
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.7",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "lucide-react": "^1.55.0",
+    "multer": "^2.4.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "three": "^0.186.1"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "vite": "^8.3.0"
+  }
+}

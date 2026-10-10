@@ -74,3 +74,85 @@ def test_missing_and_blank_frames_handled_gracefully():
     assert not metrics_none.is_detected
 
     pipeline.close()
+
+
+def test_sanitizer_deep_copy_and_forbidden_fields_scrubbed():
+    """Verify that summary sanitization explicitly discards unwhitelisted fields such as pose landmarks or images."""
+    from performx.contracts import SessionMetrics, SessionSummary, SquatConfig
+    from performx.storage import sanitize_summary_metrics
+
+    metrics = SessionMetrics(
+        total_completed_reps=6,
+        accepted_reps=5,
+        rejected_reps=1,
+        incomplete_attempts=0,
+        aborted_attempts=0,
+        mean_duration=2.5,
+        min_duration=2.0,
+        max_duration=3.0,
+        duration_range=1.0,
+        mean_descent_duration=1.2,
+        mean_bottom_dwell=0.3,
+        mean_ascent_duration=1.0,
+        mean_min_knee_angle=85.0,
+        knee_angle_range=10.0,
+        mean_rep_symmetry=0.92,
+        mean_tracking_confidence=0.95,
+        explainable_insights=["Good depth", "Slight forward lean"],
+    )
+    # SessionSummary wrapping the metrics
+    summary = SessionSummary(
+        session_id="test-session-sanitizer",
+        start_time=100.0,
+        end_time=130.0,
+        total_frames_processed=900,
+        total_reps=6,
+        valid_reps=5,
+        mean_symmetry=0.92,
+        mean_rep_duration=2.5,
+        config=SquatConfig(),
+        metrics=metrics,
+    )
+
+    sanitized = sanitize_summary_metrics(summary)
+
+    # Allowed keys
+    assert sanitized["accepted_reps"] == 5
+    assert sanitized["rejected_reps"] == 1
+    assert sanitized["mean_duration"] == 2.5
+    assert sanitized["mean_rep_symmetry"] == 0.92
+    assert sanitized["explainable_insights"] == ["Good depth", "Slight forward lean"]
+
+    # Forbidden keys must be stripped / not present
+    assert "raw_landmarks" not in sanitized
+    assert "camera_feed" not in sanitized
+    assert "nested_telemetry" not in sanitized
+    assert "extra_field" not in sanitized
+
+
+def test_in_memory_session_reset_and_close_wipes_sensitive_state():
+    """Verify that backend session reset and close cleanly evicts state from memory."""
+    from performx.api import BackendService
+
+    service = BackendService(max_sessions=10, session_idle_timeout=60.0)
+    session_id = service.create_session("squat")
+    assert session_id in service._sessions
+
+    # Resetting session retains the container but clears all metrics/buffers
+    service.reset_session(session_id)
+    summary = service.get_session_summary(session_id)
+    assert summary.metrics is None or summary.metrics.total_completed_reps == 0
+
+    # Ending session completely removes session container from active backend memory
+    ended = service.delete_session(session_id)
+    assert ended is True
+    assert session_id not in service._sessions
+
+    # Full service close wipes all remaining sessions
+    id2 = service.create_session("squat")
+    assert id2 in service._sessions
+    service.close()
+    assert len(service._sessions) == 0
+
+
+

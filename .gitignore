@@ -3,6 +3,9 @@
 env/
 venv/
 ENV/
+.env
+.env.*
+!.env.example
 
 # Python cache
 __pycache__/
@@ -19,3 +22,13 @@ __pycache__/
 Thumbs.db
 .vscode/
 .idea/
+
+# Frontend (Node / Vite)
+node_modules/
+dist/
+dist-ssr/
+*.local
+frontend/node_modules/
+frontend/dist/
+frontend/.env.local
+frontend/.env.*.local

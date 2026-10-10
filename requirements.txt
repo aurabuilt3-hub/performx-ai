@@ -16,3 +16,10 @@ protobuf==4.25.9
 # Testing & Quality Assurance
 pytest==9.1.1
 pytest-mock==3.16.0
+
+# HTTP API & Web Services
+fastapi==0.143.0
+pydantic==2.14.0
+uvicorn==0.54.0
+httpx==0.28.1
+pyjwt==2.15.1

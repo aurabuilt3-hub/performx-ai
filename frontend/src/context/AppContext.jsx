@@ -166,16 +166,10 @@ export function AppProvider({ children }) {
   useEffect(() => {
     if (authSession.isAuthenticated()) {
       syncProfileFromBackend();
-      fetchWorkoutHistory(20, 0).catch(() => {});
-      fetchActivePlan().catch(() => {});
-      fetchRecoveryHistory().catch(() => {});
-      fetchNutritionToday().catch(() => {});
-      fetchDocuments().catch(() => {});
-      fetchPrivacyConsent().catch(() => {});
     } else {
       setAuthLoading(false);
     }
-  }, [syncProfileFromBackend, fetchWorkoutHistory]);
+  }, [syncProfileFromBackend]);
 
   // Auth Action: Log out and reset session
   const logout = useCallback(() => {

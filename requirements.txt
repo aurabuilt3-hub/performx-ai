@@ -1,0 +1,18 @@
+# PERFORMX Dependency Manifest
+# Verified compatible under Python 3.11 (Windows x86_64)
+
+# Computer Vision & Machine Learning
+mediapipe==0.10.14
+opencv-contrib-python==4.10.0.84
+
+# Numerical Computing & Optimization
+numpy==1.26.4
+scipy==1.17.1
+
+# Reactive Dashboard UI & Streaming
+streamlit==1.39.1
+protobuf==4.25.9
+
+# Testing & Quality Assurance
+pytest==9.1.1
+pytest-mock==3.16.0
